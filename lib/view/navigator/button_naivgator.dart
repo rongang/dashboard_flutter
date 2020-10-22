@@ -1,3 +1,4 @@
+import 'package:dashboard_flutter/view/body/component/icon_body.dart';
 import 'package:dashboard_flutter/view/navigator/drawer_button.dart';
 import 'package:flutter/material.dart';
 
@@ -13,14 +14,13 @@ class DrawerButtonLayout extends StatefulWidget {
 }
 
 class _DrawerButtonLayoutState extends State<DrawerButtonLayout> {
-  final focusNode1 = FocusNode();
-  final focusNode2 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         DrawerButton(
+          // key: UniqueKey(),
           title: '组件页',
           expanded: widget.expanded,
           leading: Icon(Icons.whatshot),
@@ -28,20 +28,29 @@ class _DrawerButtonLayoutState extends State<DrawerButtonLayout> {
           children: [
             LeftButton(
               title: 'Cupertino',
-              focusNode: focusNode1,
               press: () {
                 widget.press(1.1);
+                IconsBody.cupertinoIconsKey.currentState.changePage(0);
               },
             ),
             LeftButton(
               title: 'Material',
-              focusNode: focusNode2,
               press: () {
                 widget.press(1.2);
+                IconsBody.cupertinoIconsKey.currentState.changePage(1);
               },
             ),
-
           ],
+        ),
+        DrawerButton(
+          // key: UniqueKey(),
+          title: '动画',
+          expanded: widget.expanded,
+          leading: Icon(Icons.album_rounded),
+          press: () {
+            widget.press(2);
+          },
+          // isSelected: false,
         ),
       ],
     );

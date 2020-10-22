@@ -8,6 +8,8 @@ class DrawerButton extends StatefulWidget {
   final Icon trailing;
   final bool isSelected;
   final List<LeftButton> children;
+  final Function press;
+  final FocusNode focusNode;
 
   const DrawerButton({
     Key key,
@@ -17,6 +19,8 @@ class DrawerButton extends StatefulWidget {
     this.trailing,
     this.isSelected = false,
     this.children,
+    this.press,
+    this.focusNode,
   }) : super(key: key);
 
   @override
@@ -34,7 +38,7 @@ class _DrawerButtonState extends State<DrawerButton> {
     leading = widget.leading;
     isSelected = widget.isSelected;
   }
-
+  final focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     final noChildren = (widget.children == null || widget.children.length <= 0);
@@ -45,21 +49,29 @@ class _DrawerButtonState extends State<DrawerButton> {
         tween: ColorTween(begin: KColor.backGround, end: textColor),
         builder: (context, value, child) {
           return InkWell(
+            focusNode: focusNode,
             onHover: (v) {
               setState(() {
                 textColor = v ? KColor.text : KColor.textGrey;
               });
             },
             onTap: () {
-              print('Pressed');
+              isSelected = true;
+              widget.press();
+              focusNode?.requestFocus();
+              setState(() {});
+            },
+            onFocusChange: (v) {
+              isSelected = false;//(widget.focusNode?.hasFocus)??false;
+              setState(() {});
             },
             child: AbsorbPointer(
               absorbing: widget.children == null,
               child: ExpansionTile(
-                onExpansionChanged: (v) {
-                  isSelected = v ? true : false;
-                  setState(() {});
-                },
+                // onExpansionChanged: (v) {
+                //   // isSelected = v ? true : false;
+                //   // setState(() {});
+                // },
                 title: Row(
                   children: [
                     if (widget.leading != null)
@@ -157,7 +169,7 @@ class LeftButton extends StatefulWidget {
 class _LeftButtonState extends State<LeftButton> {
   Color color = KColor.textGrey;
   bool isSelected;
-
+  final focusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -167,7 +179,7 @@ class _LeftButtonState extends State<LeftButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      focusNode: widget.focusNode,
+      focusNode: focusNode,
       autofocus: true,
       onHover: (v) {
         setState(() {
@@ -177,10 +189,9 @@ class _LeftButtonState extends State<LeftButton> {
       onTap: () {
         isSelected = true;
         print('子组件点击');
-        widget.focusNode.requestFocus();
+        focusNode.requestFocus();
         setState(() {});
         widget.press();
-
       },
       onFocusChange: (v) {
         isSelected = v;

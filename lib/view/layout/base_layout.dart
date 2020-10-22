@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dashboard_flutter/view/body/animation/animation_body.dart';
 import 'package:dashboard_flutter/view/body/component/icon_body.dart';
 import 'package:dashboard_flutter/view/navigator/button_naivgator.dart';
 import 'package:dashboard_flutter/view/navigator/drawer_button.dart';
@@ -82,6 +83,7 @@ class _BaseLayoutState extends State<BaseLayout> {
                     ),
                     DrawerButtonLayout(
                       press: (double index) {
+                        if (index.floor() - 1 == selected[0]) return;
                         setState(() {
                           _selected.setAll(0,
                               [index.floor() - 1, ((index * 10) % 10).toInt()]);
@@ -123,32 +125,29 @@ class _BaseLayoutState extends State<BaseLayout> {
         ),
         Expanded(
           flex: dashBoardFlex,
-          child: Container(
-            height: Adapt.screenHeight - 70,
-            child: Column(
-              children: [
-                BodyHeader(
-                  press: toggleExpanded,
+          child: Column(
+            children: [
+              BodyHeader(
+                press: toggleExpanded,
+              ),
+              Expanded(
+                child: IndexedStack(
+                  index: selected[0],
+                  children: [
+                    IconsBody(
+                        // index: selected[1],
+                        ),
+                    AnimationBody(),
+                    Container(
+                      // width: 100,
+                      height: 100,
+                      width: 200,
+                      color: Colors.red,
+                    )
+                  ],
                 ),
-                // CupertinoIconsBody(),
-                Flexible(
-                  child: IndexedStack(
-                    index: selected[0],
-                    children: [
-                      CupertinoIconsBody(
-                        index: selected[1],
-                      ),
-                      Container(
-                        // width: 100,
-                        height: 100,
-                        width: 200,
-                        color: Colors.red,
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         )
       ],
@@ -218,9 +217,8 @@ class _BodyHeaderState extends State<BodyHeader> {
                   clipBehavior: Clip.hardEdge,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: ClipOval(
-                      child: Image.asset(
-                          'assets/images/image1.jpg')),
+                  child:
+                      ClipOval(child: Image.asset('assets/images/image1.jpg')),
                 ),
                 Text('rongang')
               ],
